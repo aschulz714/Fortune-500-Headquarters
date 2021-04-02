@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset=utf-8 />
+	<title>What is my Title!</title>
+	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+	<link rel='icon' href='https://newmapsplus.github.io/favicon.ico' type='image/x-icon' />
+
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+		integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+		crossorigin="" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+
+	<link href="https://fonts.googleapis.com/css?family=Quicksand:400,700" rel="stylesheet">
+
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: 'Quicksand', sans-serif;
+			font-size: 100%;
+			color: #3d3d3d;
+		}
+
+		h1 {
+			position: absolute;
+			margin-top: 0;
+			top: 10px;
+			left: 15px;
+			font-size: 1.5em;
+			font-family: 'Quicksand', sans-serif;
+			font-weight: 700;
+			letter-spacing: .04em;
+			padding: 10px 15px;
+			/* Add styles to match Leaflet UI elements */
+			background: rgba(256, 256, 256, .3);
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+			border: 1px solid #ddd;
+			border-radius: 5px;
+			z-index: 800;
+		}
+
+		h2 {
+			font-family: 'Quicksand', sans-serif;
+			font-size: 1.2em;
+			letter-spacing: .04em;
+
+		}
+
+		#map {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			width: 100%;
+		}
+
+		#about {
+			position: absolute;
+			bottom: 20px;
+			left: 15px;
+			width: 280px;
+			padding: 0 15px;
+			/* Add styles to match Leaflet UI elements */
+			background: rgba(256, 256, 256, .3);
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+			border: 1px solid #ddd;
+			border-radius: 5px;
+			z-index: 800;
+		}
+
+		p {
+			font-size: .9em;
+			line-height: 1.5em;
+		}
+
+		a {
+			color: #005daa;
+			text-decoration: none;
+		}
+
+		a:hover {
+			text-decoration: underline;
+		}
+
+		/* Leaflet popup styles */
+		.leaflet-popup-content {
+			font-family: 'Quicksand', sans-serif;
+			font-size: 1.1em;
+		}
+
+		/* 
+		When browser is 900px high or less
+		make the font a little smaller.
+		 */
+		@media screen and (max-height: 400px) {
+
+			#about p,
+			#about h2 {
+				font-size: .6em;
+			}
+
+			h1 {
+				font-size: 1.2em;
+			}
+
+			#about h2 {
+				font-size: 1em;
+			}
+
+			.leaflet-popup-content {
+				font-family: 'Quicksand', sans-serif;
+				font-size: 0.9em;
+			}
+		}
+
+		/* Don't display info block when window is very small */
+		@media screen and (max-height: 200px) {
+
+			#about {
+				display: none;
+			}
+		}
+
+		.legend {
+			padding: 6px 8px;
+			font-size: 1em;
+			background: rgba(255, 255, 255, 0.8);
+			box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+			border-radius: 5px;
+		}
+
+		.legend h3 {
+			font-size: 1.1em;
+			font-weight: normal;
+			color: #001323;
+			margin: 0 0 10px 0;
+		}
+
+		.legend span {
+			width: 20px;
+			height: 20px;
+			float: left;
+			margin: 0 10px 4px 0;
+		}
+
+		.legend label {
+			font-size: 1.1em;
+		}
+
+		.legend label:after {
+			content: '';
+			display: block;
+			clear: both;
+		}
+	</style>
+</head>
+
+<body>
+
+	<h1>Awesome map title!</h1>
+
+	<div id='map'></div>
+
+	<section id="about">
+		<h2>About this</h2>
+		<p>Additional information about <a href="#">the data</a> and map goes here. Lorem ipsum dolor sit amet,
+			consectetur adipiscing elit. Duis urna magna, maximus nec laoreet sit amet, dictum ultricies nibh. Ut id
+			auctor lacus. Nam a dolor et justo luctus luctus. </p>
+		<p>Map authored by me, MY NAME</p>
+	</section>
+
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+		integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+		crossorigin=""></script>
+	<!-- Load a Leaflet plugin to provide geolocation if user shares their location with browser. -->
+	<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8">
+	</script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+		integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	<script>
+		src = 'data/fortune500.geojson'
+	</script>
+	<script src='https://unpkg.com/simple-statistics@7.6.0/dist/simple-statistics.min.js'>
+	</script>
+
+	<script>
+		var options = {
+			center: [39.011902, -98.484245],
+			zoom: 4,
+			zoomControl: false
+		}
+
+		var locate_options = {
+			position: 'topright',
+			strings: {
+				title: "Show me where I am, yo!"
+			}
+		}
+
+		var map = L.map('map', options);
+
+		// add zoom control to top right window position
+		L.control.zoom({
+			position: 'topright'
+		}).addTo(map);
+
+		// add geolocation control to top right window position (Leaflet can handle multiple top-right elements)
+		L.control.locate(locate_options).addTo(map);
+
+		// Get basemap URL from Leaflet Providers
+		var basemap_url = 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
+
+		// Get basemap attributes from Leaflet Providers
+		var basemap_attributes = {
+			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+			subdomains: 'abcd',
+			maxZoom: 19
+		};
+		// requests some map tiles
+		var tiles = L.tileLayer(basemap_url, basemap_attributes);
+
+		map.addLayer(tiles);
+
+		//var headquarters =L.geoJson(headquarters,{
+		//	pointToLayer : function(feature,latlng){
+		//		console.log(typeOf(feature.properties.revenues))
+
+		//	}
+
+		//}).addTo(map);
+
+
+		var commonStyles = {
+			weight: 1,
+			stroke: 1,
+			fillOpacity: 1
+		}
+
+
+		var headquarterLayer = $.getJSON("data/fortune500.geojson", function (data) {
+			var dataLayer = L.geoJSON(data, {
+				pointToLayer: function (feature, latlng) {
+					console.log(feature.properties);
+					return L.circleMarker(latlng, commonStyles)
+				},
+				style: function (feature) {
+					return {
+						color: 'blue',
+						fillColor: 'blue',
+						fillOpacity: .8,
+						radius: getRadius((feature.properties["PROFIT"]/feature.properties["REVENUES"])*100)
+					}
+				},
+				onEachFeature: function (feature, layer) {
+					var margin = ((layer.feature.properties["PROFIT"] / layer.feature.properties[
+						"REVENUES"]) * 100).toFixed(2);
+
+
+					var popup = `<b>${layer.feature.properties["NAME"]}</b>
+						<br>Revenue: $${layer.feature.properties["REVENUES"].toLocaleString()}M
+						<br>Profit: $${layer.feature.properties["PROFIT"].toLocaleString()}M
+						<br>Profit Margin: ${margin}%`;
+					layer.bindPopup(popup);
+				}
+
+			}).addTo(map);
+			drawMap(dataLayer);
+		});
+
+		function drawMap(dataLayer) {
+
+			var breaks = getClassBreaks(dataLayer);
+
+			dataLayer.eachLayer(function (layer) {
+				var p = layer.feature.properties;
+				var rev = ((p["PROFIT"]/p["REVENUES"])*100);
+				var color = getColor(rev, breaks)
+				layer.setStyle({
+					fillColor: color
+				});
+
+			})
+			drawLegend(breaks);
+		}
+
+		function getClassBreaks(dataLayer) {
+			var values = [];
+
+			dataLayer.eachLayer(function (layer) {
+				var props = layer.feature.properties
+
+				var value = ((props["PROFIT"]/props["REVENUES"])*100);
+				values.push(value);
+			})
+
+			var clusters = ss.ckmeans(values, 5);
+
+			var breaks = clusters.map(function (cluster) {
+				return [cluster[0], cluster.pop()];
+			});
+			return breaks;
+		}
+
+		function getColor(d, breaks) {
+			if (d <= breaks[0][1]) {
+				return '#f1eef6';
+			} else if (d <= breaks[1][1]) {
+				return '#bdc9e1';
+			} else if (d <= breaks[2][1]) {
+				return '#74a9cf';
+			} else if (d <= breaks[3][1]) {
+				return '#2b8cbe';
+			} else if (d <= breaks[4][1]) {
+				return '#045a8d';
+			}
+		}
+
+		function drawLegend(breaks) {
+
+			var legend = L.control({
+				position: 'topleft'
+			});
+			legend.onAdd = function () {
+				var div = L.DomUtil.create('div', 'legend');
+
+				div.innerHTML = `<h3>Fortune 500 by Profit Margin</h3>`;
+
+				for (var i = 0; i < breaks.length; i++) {
+					var color = getColor(breaks[i][0], breaks);
+
+					div.innerHTML +=
+						`<span style="background:${color}"></span>
+					<label>${(breaks[i][0]).toFixed(2)}%&mdash;
+						${(breaks[i][1]).toFixed(2)}%</label>`;
+				}
+
+				return div;
+			};
+			legend.addTo(map);
+		}
+
+		function getRadius(val) {
+			var radius = val
+			return radius;
+		}
+
+		// var message = '<h2>University of Kentucky!</h2>Department of Geography';
+
+		// L.marker(map.getCenter())
+		// 	.bindPopup(message)
+		// 	.addTo(map)
+	</script>
+
+</body>
+
+</html>
