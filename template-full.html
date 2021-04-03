@@ -281,7 +281,17 @@
 					fillColor: color
 				});
 
+			layer.on('mouseover', function(){
+				layer.setStyle({
+					fillColor:'yellow',
+				})
 			})
+			layer.on('mouseout', function(){
+				layer.setStyle({
+					fillColor: color
+				})
+			})
+			});
 		//	drawLegend(breaks);
 		}
 
