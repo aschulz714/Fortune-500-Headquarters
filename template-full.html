@@ -282,7 +282,7 @@
 				});
 
 			})
-			drawLegend(breaks);
+		//	drawLegend(breaks);
 		}
 
 		function getClassBreaks(dataLayer) {
@@ -317,29 +317,29 @@
 			}
 		}
 
-		function drawLegend(breaks) {
+	//	function drawLegend(breaks) {
 
-			var legend = L.control({
-				position: 'topleft'
-			});
-			legend.onAdd = function () {
-				var div = L.DomUtil.create('div', 'legend');
+		// 	var legend = L.control({
+		// 		position: 'topleft'
+		// 	});
+		// 	legend.onAdd = function () {
+		// 		var div = L.DomUtil.create('div', 'legend');
 
-				div.innerHTML = `<h3>Fortune 500 by Profit Margin</h3>`;
+		// 		div.innerHTML = `<h3>Fortune 500 by Profit Margin</h3>`;
 
-				for (var i = 0; i < breaks.length; i++) {
-					var color = getColor(breaks[i][0], breaks);
+		// 		for (var i = 0; i < breaks.length; i++) {
+		// 			var color = getColor(breaks[i][0], breaks);
 
-					div.innerHTML +=
-						`<span style="background:${color}"></span>
-					<label>${(breaks[i][0]).toFixed(2)}%&mdash;
-						${(breaks[i][1]).toFixed(2)}%</label>`;
-				}
+		// 			div.innerHTML +=
+		// 				`<span style="background:${color}"></span>
+		// 			<label>${(breaks[i][0]).toFixed(2)}%&mdash;
+		// 				${(breaks[i][1]).toFixed(2)}%</label>`;
+		// 		}
 
-				return div;
-			};
-			legend.addTo(map);
-		}
+		// 		return div;
+		// 	};
+		// 	legend.addTo(map);
+		// }
 
 		function getRadius(val) {
 			var radius = val
