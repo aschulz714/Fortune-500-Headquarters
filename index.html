@@ -242,7 +242,7 @@
 		}
 
 
-		var headquarterLayer = $.getJSON("data/fortune500.geojson", function (data) {
+		var headquarterLayer = $.getJSON("Data/fortune500.geojson", function (data) {
 			var dataLayer = L.geoJSON(data, {
 				pointToLayer: function (feature, latlng) {
 					//console.log(feature.properties["PROFIT"]);
