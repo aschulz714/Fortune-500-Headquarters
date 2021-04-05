@@ -269,6 +269,13 @@
 						radius: getRadius((feature.properties["PROFIT"]/feature.properties["REVENUES"])*100)
 					}
 				},
+				// filter: function(feature,layer){
+				// 	if(((feature.properties["PROFIT"]/feature.properties["REVENUES"])*100)>20){
+				// 		console.log(feature.properties["NAME"]);
+				// 		return feature;
+				// 	}
+
+				// },
 				onEachFeature: function (feature, layer) {
 					var margin = ((layer.feature.properties["PROFIT"] / layer.feature.properties[
 						"REVENUES"]) * 100).toFixed(2);
@@ -287,15 +294,33 @@
 
 		function drawMap(dataLayer) {
 
-			var breaks = getClassBreaks(dataLayer);
+		//	var breaks = getClassBreaks(dataLayer);
 
-			dataLayer.eachLayer(function (layer) {
-				var p = layer.feature.properties;
+			 dataLayer.eachLayer(function (layer) {
+			 	var p = layer.feature.properties;
 				var rev = ((p["PROFIT"]/p["REVENUES"])*100);
-				var color = getColor(rev, breaks)
-				layer.setStyle({
-					fillColor: color
-				});
+				// var color ='sky blue'
+				//var color = getColor(rev, breaks)
+				// layer.setStyle({
+				// 	fillOpacity: .8,
+				// 	fillColor: '#1f78b4',
+				// 	color:'blue'
+				// });
+
+				dataLayer.setStyle(function (layer){
+				if(rev<0){
+					return{
+						color:'red',
+						fillColor:'red'
+
+					}} else {
+						return {
+							color:'blue',
+							fillColor:'#1f78b4'
+						}
+
+					}
+				})
 
 			layer.on('mouseover', function(){
 				layer.setStyle({
@@ -304,77 +329,83 @@
 			})
 			layer.on('mouseout', function(){
 				layer.setStyle({
-					fillColor: color
+					fillColor: '#1f78b4',
+					color: 'blue'
+					//fillColor: color
 				})
-			})
 			});
-			drawLegend(breaks);
+		//	});
+		//	drawLegend(breaks);
 		}
 
-		function getClassBreaks(dataLayer) {
-			var values = [];
+			 )};
 
-			dataLayer.eachLayer(function (layer) {
-				var props = layer.feature.properties
+		
 
-				var value = ((props["PROFIT"]/props["REVENUES"])*100);
-				values.push(value);
-			})
+		// function getClassBreaks(dataLayer) {
+		// 	var values = [];
 
-			var clusters = ss.ckmeans(values, 5);
+		// 	dataLayer.eachLayer(function (layer) {
+		// 		var props = layer.feature.properties
 
-			var breaks = clusters.map(function (cluster) {
-				return [cluster[0], cluster.pop()];
-			});
-			return breaks;
-		}
+		// 		var value = ((props["PROFIT"]/props["REVENUES"])*100);
+		// 		values.push(value);
+		// 	})
 
-		function getColor(d, breaks) {
-			if (d <= breaks[0][1]) {
-				return 'red';
-			} else if (d <= breaks[1][1]) {
-				return 'red';
-			} else if (d <= breaks[2][1]) {
-				return 'red';
-			} else if (d <= breaks[3][1]) {
-				return '#2b8cbe';
-			} else if (d <= breaks[4][1]) {
-				return '#045a8d';
-			}
-		}
+		// 	var clusters = ss.ckmeans(values, 5);
+
+		// 	var breaks = clusters.map(function (cluster) {
+		// 		return [cluster[0], cluster.pop()];
+		// 	});
+		// 	return breaks;
+		// }
+
+		// function getColor(d, breaks) {
+		// 	if (d <= breaks[0][1]) {
+		// 		return 'red';
+		// 	} else if (d <= breaks[1][1]) {
+		// 		return 'red';
+		// 	} else if (d <= breaks[2][1]) {
+		// 		return 'purple';
+		// 	} else if (d <= breaks[3][1]) {
+		// 		return '#2b8cbe';
+		// 	} else if (d <= breaks[4][1]) {
+		// 		return '#045a8d';
+		// 	}
+		// }
 
 
-				function drawLegend(breaks) {
+		// 		function drawLegend(breaks) {
 
-			var legend = L.control({
-				position: 'topleft'
-			});
-			legend.onAdd = function () {
-				var div = L.DomUtil.create('div', 'legend');
+		// 	var legend = L.control({
+		// 		position: 'topleft'
+		// 	});
+		// 	legend.onAdd = function () {
+		// 		var div = L.DomUtil.create('div', 'legend');
 
-				div.innerHTML = `<h3>Fortune 500 by Profit Margin</h3>`;
+		// 		div.innerHTML = `<h3>Fortune 500 by Profit Margin</h3>`;
 
-				for (var i = 0; i < breaks.length; i++) {
-					var color = getColor(breaks[i][0], breaks);
+		// 		for (var i = 0; i < breaks.length; i++) {
+		// 			var color = getColor(breaks[i][0], breaks);
 
-					div.innerHTML +=
-						`<span style="background:${color}"></span>
-					<label>${(breaks[i][0]).toFixed(2)}%&mdash;
-						${(breaks[i][1]).toFixed(2)}%</label>`;
-				}
+		// 			div.innerHTML +=
+		// 				`<span style="background:${color}"></span>
+		// 			<label>${(breaks[i][0]).toFixed(2)}%&mdash;
+		// 				${(breaks[i][1]).toFixed(2)}%</label>`;
+		// 		}
 
-				return div;
-			};
-			legend.addTo(map);
-		}
+		// 		return div;
+		// 	};
+		// 	legend.addTo(map);
+		// }
 
 		function getRadius(val) {
 		 	if(val<0){
-				 var radius =8
+				 var radius =10
 			 }else{
 			var radius = val
 			 }
-			 console.log(radius);
+			// console.log(radius);
 			return radius;
 		 }
 
