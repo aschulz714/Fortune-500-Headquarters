@@ -163,7 +163,9 @@
 
 	<div id='map'></div>
 
+
 	<section id="about">
+		<button id='find-company'>Find Company</button>
 		<h2>About this</h2>
 		<p>This map uses a dataset of Fortune 500 Corporate Headquarters from the Homeland Infrastructure Foundation-Level Data. 
 		The data provided financial metrics of revenue and profit, so I styled based on profit margin (profit/revenue). Fortune 500 companies are ranked by revenue, but juicy profit margins are a juicier metric. Companies with the highest profit margins are in tech, biotech/healthcare, tobacco, and banking. Companies with the lowest margins are in retail and energy. WalMart, the largest company of the Fortune 500, is a blip on this map with a profit margin of 2.81%. Additional information about <a href="https://hifld-geoplatform.opendata.arcgis.com/datasets/fortune-500-corporate-headquarters?geometry=-163.297%2C24.372%2C-29.791%2C48.694">the data</a> 
@@ -252,7 +254,7 @@
 					return {
 						color: 'blue',
 						fillColor: 'blue',
-						fillOpacity: .8,
+						fillOpacity: .4,
 						radius: getRadius((feature.properties["PROFIT"]/feature.properties["REVENUES"])*100)
 					}
 				},
@@ -286,28 +288,27 @@
 			 dataLayer.eachLayer(function (layer) {
 			 var p = layer.feature.properties;
 			var rev = ((p["PROFIT"]/p["REVENUES"])*100);
-				// var color ='sky blue'
-				//var color = getColor(rev, breaks)
-				// layer.setStyle({
-				// 	fillOpacity: .8,
-				// 	fillColor: '#1f78b4',
-				// 	color:'blue'
-				// });
+				var color = getColor(rev)
+				layer.setStyle({
+					fillOpacity: .8,
+					fillColor: color,
+					color:'blue'
+				});
 
-				dataLayer.setStyle(function (layer){
-				if(rev<0){
-					return{
-						color:'red',
-						fillColor:'red'
+				// dataLayer.setStyle(function (layer){
+				// if(layer.feature.properties["PROFIT"]<0){
+				// 	return{
+				// 		color:'red',
+				// 		fillColor:'red'
 
-					}} else {
-						return {
-							color:'blue',
-							fillColor:'#1f78b4'
-						}
+				// 	}} else {
+				// 		return {
+				// 			color:'blue',
+				// 			fillColor:'#1f78b4'
+				// 		}
 
-					}
-				})
+				// 	}
+				// })
 
 			layer.on('mouseover', function(){
 				layer.setStyle({
@@ -316,16 +317,16 @@
 			})
 			layer.on('mouseout', function(){
 				layer.setStyle({
-					fillColor: '#1f78b4',
-					color: 'blue'
-					//fillColor: color
+					//fillColor: '#1f78b4',
+					//color: 'blue'
+					fillColor: color
 				})
 			});
-		//	});
+			});
 		//	drawLegend(breaks);
 		}
 
-			 )};
+			// )};
 
 		
 
@@ -339,7 +340,7 @@
 		// 		values.push(value);
 		// 	})
 
-		// 	var clusters = ss.ckmeans(values, 5);
+		// 	var clusters = ss.ckmeans(values, 7);
 
 		// 	var breaks = clusters.map(function (cluster) {
 		// 		return [cluster[0], cluster.pop()];
@@ -347,19 +348,19 @@
 		// 	return breaks;
 		// }
 
-		// function getColor(d, breaks) {
-		// 	if (d <= breaks[0][1]) {
-		// 		return 'red';
-		// 	} else if (d <= breaks[1][1]) {
-		// 		return 'red';
+		function getColor(rev) {
+			if (rev <= 0) {
+		 		return 'red';
+		 	} else if (rev => 0) {
+		 		return '#1f78b4';
 		// 	} else if (d <= breaks[2][1]) {
 		// 		return 'purple';
 		// 	} else if (d <= breaks[3][1]) {
 		// 		return '#2b8cbe';
 		// 	} else if (d <= breaks[4][1]) {
 		// 		return '#045a8d';
-		// 	}
-		// }
+		 	}
+		}
 
 
 		// 		function drawLegend(breaks) {
@@ -386,9 +387,42 @@
 		// 	legend.addTo(map);
 		// }
 
+		var button=document.getElementById('find-company');
+			
+
+		button.addEventListener("click", function(){
+			var name='',
+			i=0
+			
+			while(true){
+				name=prompt('Enter name of company to find on map',
+				'double check spelling');
+
+				i++
+
+				if(name==null){
+					alert("You Canceled!")
+					break
+				}else if(name==feature.properties["NAME"]){
+					mapCompany(name);
+					break
+				}else if(name!=feature.properties["NAME"]){
+					alert("Check Spelling or company not in Fortune 500")
+					break
+				}
+
+			}
+
+		});
+
+		function mapCompany(name){
+			console.log(name);
+			
+		}
+
 		function getRadius(val) {
 		 	if(val<0){
-				 var radius =10
+				 var radius =5
 			 }else{
 			var radius = val
 			 }
