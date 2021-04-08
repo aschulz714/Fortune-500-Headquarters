@@ -255,7 +255,8 @@
 						color: 'blue',
 						fillColor: 'blue',
 						fillOpacity: .4,
-						radius: getRadius((feature.properties["PROFIT"]/feature.properties["REVENUES"])*100)
+						radius: getRadius((feature.properties["PROFIT"]/feature.properties["REVENUES"]*100)
+						)
 					}
 				},
 				// filter: function(feature,layer){
@@ -422,11 +423,11 @@
 
 		function getRadius(val) {
 		 	if(val<0){
-				 var radius =5
-			 }else{
+				 var radius =val*-1
+			 }else if(val=>0){
 			var radius = val
 			 }
-			// console.log(radius);
+			console.log(radius);
 			return radius;
 		 }
 
