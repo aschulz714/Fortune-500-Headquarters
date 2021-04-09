@@ -234,7 +234,7 @@
 
 		map.addLayer(tiles);
 
-	
+
 
 
 		var commonStyles = {
@@ -259,7 +259,7 @@
 							100))
 					}
 				},
-			
+
 				onEachFeature: function (feature, layer) {
 					var margin = ((layer.feature.properties["PROFIT"] / layer.feature.properties[
 						"REVENUES"]) * 100).toFixed(2);
@@ -274,7 +274,24 @@
 
 			}).addTo(map);
 			drawMap(dataLayer);
-			loopOverLayers(dataLayer);
+
+			button.addEventListener("click", function () {
+				console.log(dataLayer)
+				dataLayer.eachLayer(function (layer) {
+
+					var name = layer.feature.properties["NAME"]
+					if (input.value.toUpperCase() == name) {
+						layer.setStyle({
+							fillColor: 'yellow'
+						});
+						const center = layer.feature.geometry.coordinates
+						map.flyTo([center[1], center[0]], 10)
+						layer.openPopup()
+					}
+				})
+
+			}
+			);
 		});
 
 		function drawMap(dataLayer) {
@@ -306,7 +323,7 @@
 				});
 				// drawLegend(rev);
 			});
-				
+
 		}
 
 
@@ -352,20 +369,22 @@
 		const button = document.querySelector('#enter');
 
 
-		button.addEventListener("click", loopOverLayers);
+		// button.addEventListener("click", loopOverLayers);
 
 
-		function loopOverLayers(dataLayer) {
-			dataLayer.eachLayer(function (layer) {
-				var name = layer.feature.properties["NAME"]
-				if (input.value.toUpperCase() == name) {
-					layer.setStyle({
-						fillColor: 'yellow'
-					});
-				}
-			})
+		// function loopOverLayers(dataLayer) {
 
-		};
+		// 	dataLayer.eachLayer(function (layer) {
+		// 		console.log(dataLayer)
+		// 		var name = layer.feature.properties["NAME"]
+		// 		if (input.value.toUpperCase() == name) {
+		// 			layer.setStyle({
+		// 				fillColor: 'yellow'
+		// 			});
+		// 		}
+		// 	})
+
+		// };
 
 		function getRadius(val) {
 			if (val < 0) {
