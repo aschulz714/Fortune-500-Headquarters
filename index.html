@@ -305,7 +305,7 @@
 					})
 				});
 			});
-			//	drawLegend(breaks);
+				// drawLegend(rev);
 		}
 
 
@@ -323,23 +323,23 @@
 		}
 
 
-		// 		function drawLegend(breaks) {
+		// 		function drawLegend(rev) {
 
 		// 	var legend = L.control({
-		// 		position: 'topleft'
+		// 		position: 'topright'
 		// 	});
 		// 	legend.onAdd = function () {
 		// 		var div = L.DomUtil.create('div', 'legend');
 
 		// 		div.innerHTML = `<h3>Fortune 500 by Profit Margin</h3>`;
 
-		// 		for (var i = 0; i < breaks.length; i++) {
-		// 			var color = getColor(breaks[i][0], breaks);
+		// 		for (var i = 0; i < rev.length; i++) {
+		// 			var color = getColor(rev[i]<0, rev);
 
 		// 			div.innerHTML +=
 		// 				`<span style="background:${color}"></span>
-		// 			<label>${(breaks[i][0]).toFixed(2)}%&mdash;
-		// 				${(breaks[i][1]).toFixed(2)}%</label>`;
+		// 			<label>${(rev<0).toFixed(2)}%;
+		// 				${(rev=>0).toFixed(2)}%</label>`;
 		// 		}
 
 		// 		return div;
