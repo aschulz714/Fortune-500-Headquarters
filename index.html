@@ -90,6 +90,10 @@
 			font-size: 1.1em;
 		}
 
+		#dropdown {
+			width: 100px;
+		}
+
 		/* 
 		When browser is 900px high or less
 		make the font a little smaller.
@@ -165,8 +169,11 @@
 
 
 	<section id="about">
-		<input id='company' placeholder="Find Company">
-		<button id='enter'>Find on Map</button>
+		<input id='company' placeholder="Type first letter">
+		<select id="dropdown">
+			<option>Name</option>
+		</select>
+		<!-- <button id='enter'>Find on Map</button> -->
 		<h2>About this</h2>
 		<p>This map uses a dataset of Fortune 500 Corporate Headquarters from the Homeland Infrastructure
 			Foundation-Level Data.
@@ -274,12 +281,28 @@
 
 			}).addTo(map);
 			drawMap(dataLayer);
+			input.addEventListener("input", function () {
 
-			button.addEventListener("click", function () {
-				console.log(dataLayer)
+				dd.innerHTML = `<option>Name</option>`
+				
 				dataLayer.eachLayer(function (layer) {
-
 					var name = layer.feature.properties["NAME"]
+					var id = input.value.toUpperCase()
+
+					if (id.substring(0, 1) == name.substring(0, 1)) {
+						dd.innerHTML += `<option>${name}</option>`
+					}
+
+					dd.addEventListener("change", function (e) {
+						if (e.target.value.toUpperCase() == name) {
+							layer.setStyle({
+								fillColor: 'yellow'
+							});
+							const center = layer.feature.geometry.coordinates
+							map.flyTo([center[1], center[0]], 10)
+							layer.openPopup()
+						}
+					})
 					if (input.value.toUpperCase() == name) {
 						layer.setStyle({
 							fillColor: 'yellow'
@@ -289,6 +312,7 @@
 						layer.openPopup()
 					}
 				})
+
 
 			}
 			);
@@ -367,6 +391,7 @@
 
 		const input = document.querySelector('#company')
 		const button = document.querySelector('#enter');
+		const dd = document.querySelector('#dropdown');
 
 
 		// button.addEventListener("click", loopOverLayers);
